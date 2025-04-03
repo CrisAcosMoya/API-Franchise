@@ -1,47 +1,96 @@
-# Proyecto Base Implementando Clean Architecture
+# ğŸ“Œ API de Franquicias
 
-## Antes de Iniciar
+## ğŸ“– DescripciÃ³n
+Este proyecto consiste en la construcciÃ³n de una API para gestionar una lista de franquicias.
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+### ğŸ“Œ CaracterÃ­sticas
+Una franquicia estÃ¡ compuesta por:
+- **Nombre**
+- **Listado de sucursales**
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+Cada **sucursal** estÃ¡ compuesta por:
+- **Nombre**
+- **Listado de productos ofertados**
 
-# Arquitectura
+Cada **producto** incluye:
+- **Nombre**
+- **Cantidad de stock**
 
-![Clean Architecture](https://miro.medium.com/max/1400/1*ZdlHz8B0-qu9Y-QO3AXR_w.png)
+### âœ… Criterios de AceptaciÃ³n
+1. Exponer un endpoint para agregar una nueva franquicia.
+2. Exponer un endpoint para agregar una nueva sucursal a una franquicia.
+3. Exponer un endpoint para agregar un nuevo producto a una sucursal.
+4. Exponer un endpoint para eliminar un producto de una sucursal.
+5. Exponer un endpoint para modificar el stock de un producto.
+6. Exponer un endpoint que permita mostrar cuÃ¡l es el producto con mÃ¡s stock por sucursal dentro de una franquicia especÃ­fica. El endpoint debe devolver un listado de productos indicando a quÃ© sucursal pertenece.
 
-## Domain
+---
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+## ğŸš€ Requisitos
+Antes de ejecutar el proyecto, asegÃºrate de tener instalados los siguientes componentes:
 
-## Usecases
+- ğŸ³ **Docker** (para contenedores de base de datos)
+- ğŸ§ **WSL** (Windows Subsystem for Linux, en caso de usar Windows)
+- ğŸ›¢ï¸ **PostgreSQL**
+- â˜• **Java 17 o superior**
+- ğŸ“¦ **Gradle** (para la gestiÃ³n de dependencias)
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+## ğŸ› ï¸ TecnologÃ­as Utilizadas
+Este proyecto utiliza las siguientes tecnologÃ­as:
 
-## Infrastructure
+- **Lenguaje**: Java Reactivo 17
+- **Framework**: Spring Boot
+- **Reactivo**: Spring WebFlux
+- **ORM**: R2DBC (Reactive Relational Database Connectivity)
+- **Utilidad**: Lombok (para reducir cÃ³digo repetitivo)
+- **DocumentaciÃ³n**: Postman
+- **Pruebas unitarias**: JUnit 5
+- **Arquitectura**: Arquitectura Limpia
+- **Contenedores**: Docker
 
-### Helpers
+---
 
-En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
+## âš¡ EjecuciÃ³n del Proyecto
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+### ğŸ“¥ Clonar el Repositorio
+```bash
+https://github.com/CrisAcosMoya/API-Franchise.git
+```
 
-Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
+### ğŸ˜ Levantar Contenedores Adicionales
+AsegÃºrate de ejecutar los siguientes contenedores para que el proyecto funcione correctamente:
 
-### Driven Adapters
+#### PostgreSQL (Base de datos)
+```bash
+docker run --name postgres_db \
+-e POSTGRES_PASSWORD=1234 \
+-e POSTGRES_USER=root \
+-e POSTGRES_DB=base \
+-d -p 5432:5432 \
+-v C:\Users\docker\volumes\postgres:/var/lib/postgresql/data \
+-d postgres
+```
 
-Los driven adapter representan implementaciones externas a nuestro sistema, como lo son conexiones a servicios rest,
-soap, bases de datos, lectura de archivos planos, y en concreto cualquier origen y fuente de datos con la que debamos
-interactuar.
+### ğŸ›¢ï¸ Ejecutar Script en la Base de Datos
+El script necesario para la configuraciÃ³n inicial de la base de datos se encuentra en:
+```
+applications/app-service/src/main/resources
+```
 
-### Entry Points
+### â–¶ï¸ Ejecutar el Proyecto en Local
+AsegÃºrate de que el puerto configurado sea **8080**. Luego de que la base de datos estÃ© funcionando correctamente, ejecuta el servidor Spring Boot con:
+```bash
+mvn spring-boot:run
+```
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+---
 
-## Application
+## ğŸ“Œ Acceso a la ColecciÃ³n de Postman
+Para realizar pruebas con la API, puedes acceder a la colecciÃ³n de Postman ubicada en la raÃ­z del repositorio con el siguiente nombre:
+```
+REST API Franquicias.postman_collection
+```
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+Â¡Listo! Ahora puedes probar la API de franquicias. ğŸš€
 
-**Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+
